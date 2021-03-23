@@ -2,6 +2,7 @@ import { h, JSX } from "preact";
 import { useState } from "preact/hooks";
 import store, { AtomicAsset } from "./store";
 import { addAsset, addAssets, clearAssets, removeAsset } from "./AssetManager";
+import AssetCount from "./AssetCount";
 import Button from "./Button";
 
 interface ResponseJson {
@@ -49,6 +50,7 @@ export default function App(): JSX.Element {
 	return (
 		<div>
 			<h1>AtomicHeap</h1>
+			<AssetCount />
 			<div>
 				<Button
 					action={() => {
