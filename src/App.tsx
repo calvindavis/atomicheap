@@ -1,8 +1,20 @@
 import { h, JSX } from "preact";
-import { useEffect, useState } from "preact/hooks";
-import store from "./store";
-import { addAsset, clearAssets, removeAsset } from "./AssetManager";
+import { useState } from "preact/hooks";
+import store, { AtomicAsset } from "./store";
+import { addAsset, addAssets, clearAssets, removeAsset } from "./AssetManager";
 import Button from "./Button";
+
+interface ResponseJson {
+	data: [
+		{
+			data: {
+				back_img: string;
+				img: string;
+				name: string;
+			};
+		}
+	];
+}
 
 export default function App(): JSX.Element {
 	const [assets, setAssets] = useState(store.getState().assets);
@@ -11,6 +23,28 @@ export default function App(): JSX.Element {
 		const newAssets = store.getState().assets;
 		setAssets([...newAssets]);
 	});
+
+	function getAssets() {
+		fetch(
+			"https://us1.wax.api.atomicassets.io/atomicmarket/v1/assets?owner=pwlb2.wam&collection_name=kogsofficial"
+		)
+			.then((response) => {
+				return response.json();
+			})
+			.then((json: ResponseJson) => {
+				const assets: AtomicAsset[] = json.data.map((datum) => {
+					return {
+						img: `https://wax.atomichub.io/ipfs/${datum.data.img}`,
+						backimg: `https://wax.atomichub.io/preview?ipfs=${datum.data.img}`,
+						name: datum.data.name,
+					};
+				});
+
+				console.log(assets);
+
+				addAssets(...assets);
+			});
+	}
 
 	return (
 		<div>
@@ -28,19 +62,25 @@ export default function App(): JSX.Element {
 					}}
 					text="Clear assets"
 				/>
+				<Button action={getAssets} text="Get assets" />
 			</div>
 
-			{assets.map((asset, key) => (
-				<p key={key}>
-					{asset.name} #{asset.id}
-					<Button
-						action={() => {
-							removeAsset(asset);
-						}}
-						text="Remove"
-					/>
-				</p>
-			))}
+			<div class="grid grid-cols-6 gap-4">
+				{assets.map((asset, key) => (
+					<div key={key}>
+						<div>{asset.name}</div>
+
+						<img src={asset.backimg} alt="" />
+
+						<Button
+							action={() => {
+								removeAsset(asset);
+							}}
+							text="Remove"
+						/>
+					</div>
+				))}
+			</div>
 		</div>
 	);
 }
