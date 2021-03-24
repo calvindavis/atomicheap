@@ -33,11 +33,11 @@ export default function App(): JSX.Element {
 				type: "assets/add",
 				assets: response.data,
 			});
-
-			setWorking(false);
 		} else {
 			console.error("Unable to get assets", response);
 		}
+
+		setWorking(false);
 	}
 
 	return (

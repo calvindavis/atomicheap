@@ -9,5 +9,5 @@ export interface IpfsImageProps {
 }
 
 export default function IpfsImage({ hash }: IpfsImageProps): JSX.Element {
-	return <img src={getIpfsUrl(hash)} alt="" />;
+	return <img src={getIpfsUrl(hash)} alt="" loading="lazy" />;
 }

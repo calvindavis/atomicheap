@@ -31,22 +31,35 @@ export interface Response<TData> {
 }
 
 interface AssetOptions {
+	owner?: string;
+	burned?: boolean;
+	collection_name?: string;
+	schema_name?: string;
 	limit?: number;
 }
 
 export default class AtomicAssets {
 	public static async assets(
 		options: AssetOptions = {
-			limit: 5,
+			collection_name: "kogsofficial",
+			schema_name: "2ndedition",
 		}
 	): Promise<Response<Asset>> {
 		const url = new URL(`${API_ROOT}/v1/assets`);
 
-		if (options.limit) {
-			url.searchParams.append("limit", options.limit.toString());
-		}
+		_appendSearchParam(url, "owner", options.owner);
+		_appendSearchParam(url, "collection_name", options.collection_name);
+		_appendSearchParam(url, "schema_name", options.schema_name);
+		_appendSearchParam(url, "limit", options.limit);
 
 		const response = await fetch(url.toString());
+
 		return await response.json();
+	}
+}
+
+function _appendSearchParam(url: URL, name: string, value: any) {
+	if (value) {
+		url.searchParams.append(name, `${value}`);
 	}
 }
