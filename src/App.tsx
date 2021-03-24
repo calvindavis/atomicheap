@@ -8,8 +8,10 @@ import AssetCount from "./AssetCount";
 import AtomicAssets from "./AtomicAssets";
 import Button from "./Button";
 import Scene from "./Scene";
+import { getIpfsUrl } from "./IpfsImage";
 
 export default function App(): JSX.Element {
+	const [working, setWorking] = useState(false);
 	const [assets, setAssets] = useState(store.getState().assets);
 
 	store.subscribe(() => {
@@ -18,13 +20,21 @@ export default function App(): JSX.Element {
 	});
 
 	async function getAssets() {
+		setWorking(true);
+
 		const response = await AtomicAssets.assets();
 
 		if (response.success) {
+			for (const asset of response.data) {
+				await fetch(getIpfsUrl(asset.data.img));
+			}
+
 			store.dispatch({
 				type: "assets/add",
 				assets: response.data,
 			});
+
+			setWorking(false);
 		} else {
 			console.error("Unable to get assets", response);
 		}
@@ -42,8 +52,9 @@ export default function App(): JSX.Element {
 						store.dispatch({ type: "assets/clear" });
 					}}
 					text="Clear assets"
+					disabled={working}
 				/>
-				<Button action={getAssets} text="Get assets" />
+				<Button action={getAssets} text="Get assets" disabled={working} />
 			</div>
 
 			<div>
