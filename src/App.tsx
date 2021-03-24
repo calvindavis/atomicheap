@@ -1,11 +1,13 @@
 import { h, JSX } from "preact";
 import { useState } from "preact/hooks";
+
 import store from "./store";
-import AssetCount from "./AssetCount";
-import Button from "./Button";
-import IpfsImage from "./IpfsImage";
-import AtomicAssets from "./AtomicAssets";
+
 import AssetCard from "./AssetCard";
+import AssetCount from "./AssetCount";
+import AtomicAssets from "./AtomicAssets";
+import Button from "./Button";
+import Scene from "./Scene";
 
 export default function App(): JSX.Element {
 	const [assets, setAssets] = useState(store.getState().assets);
@@ -42,6 +44,10 @@ export default function App(): JSX.Element {
 					text="Clear assets"
 				/>
 				<Button action={getAssets} text="Get assets" />
+			</div>
+
+			<div>
+				<Scene />
 			</div>
 
 			<div class="grid grid-cols-6 gap-4">

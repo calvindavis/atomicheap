@@ -46,7 +46,6 @@ export default class AtomicAssets {
 			url.searchParams.append("limit", options.limit.toString());
 		}
 
-		console.log(url);
 		const response = await fetch(url.toString());
 		return await response.json();
 	}
