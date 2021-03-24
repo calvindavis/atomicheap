@@ -2,7 +2,7 @@
 
 Your AtomicAssets, in an AtomicHeap.
 
-[View the demo!](https://atomicheap.calvindavis.uk/)
+[View the demo!](https://atomicheap.fullysick.uk/)
 
 ## Requirements
 
