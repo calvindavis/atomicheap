@@ -30,9 +30,24 @@ export interface Response<TData> {
 	data: TData[];
 }
 
+interface AssetOptions {
+	limit?: number;
+}
+
 export default class AtomicAssets {
-	public static async assets(): Promise<Response<Asset>> {
-		const response = await fetch(`${API_ROOT}/v1/assets?limit=10`);
+	public static async assets(
+		options: AssetOptions = {
+			limit: 5,
+		}
+	): Promise<Response<Asset>> {
+		const url = new URL(`${API_ROOT}/v1/assets`);
+
+		if (options.limit) {
+			url.searchParams.append("limit", options.limit.toString());
+		}
+
+		console.log(url);
+		const response = await fetch(url.toString());
 		return await response.json();
 	}
 }

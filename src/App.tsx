@@ -5,6 +5,7 @@ import AssetCount from "./AssetCount";
 import Button from "./Button";
 import IpfsImage from "./IpfsImage";
 import AtomicAssets from "./AtomicAssets";
+import AssetCard from "./AssetCard";
 
 export default function App(): JSX.Element {
 	const [assets, setAssets] = useState(store.getState().assets);
@@ -23,7 +24,7 @@ export default function App(): JSX.Element {
 				assets: response.data,
 			});
 		} else {
-			alert("Error!");
+			console.error("Unable to get assets", response);
 		}
 	}
 
@@ -46,23 +47,7 @@ export default function App(): JSX.Element {
 			<div class="grid grid-cols-6 gap-4">
 				{assets.map((asset, key) => (
 					<div key={key}>
-						<div>{asset.data.name}</div>
-
-						<div class="relative">
-							<IpfsImage hash={asset.data.img} preview />
-
-							<div class="absolute bottom-0 left-0">
-								<Button
-									action={() => {
-										store.dispatch({
-											type: "assets/remove",
-											assets: [asset],
-										});
-									}}
-									text="Remove"
-								/>
-							</div>
-						</div>
+						<AssetCard asset={asset} remove />
 					</div>
 				))}
 			</div>
