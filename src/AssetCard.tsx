@@ -19,7 +19,7 @@ export default function AssetCard({
 				<div>{asset.data.name}</div>
 
 				<div class="relative">
-					<IpfsImage hash={asset.data.img} preview />
+					<IpfsImage hash={asset.data.img} />
 
 					{remove && (
 						<div class="absolute bottom-0 right-0">
