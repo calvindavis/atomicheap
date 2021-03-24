@@ -1,20 +1,13 @@
 import { Action, createStore, Reducer } from "redux";
-
-export interface AtomicAsset {
-	backimg?: string;
-	collection?: string;
-	id?: number;
-	img?: string;
-	name?: string;
-}
+import { Asset } from "./AtomicAssets";
 
 interface AssetAction extends Action<string> {
 	type: "assets/add" | "assets/clear" | "assets/remove";
-	assets?: AtomicAsset[];
+	assets?: Asset[];
 }
 
 interface Store {
-	assets: AtomicAsset[];
+	assets: Asset[];
 }
 
 const reducer: Reducer<Store, AssetAction> = (
@@ -27,7 +20,7 @@ const reducer: Reducer<Store, AssetAction> = (
 
 	switch (action.type) {
 		case "assets/add":
-			newState.assets.push(...action.assets);
+			newState.assets = [...action.assets, ...newState.assets];
 			break;
 
 		case "assets/clear":

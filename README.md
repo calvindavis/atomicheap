@@ -1,6 +1,8 @@
-# atomicheap
+# AtomicHeap
 
-Like a sourdough starter, but for a small React app.
+Your AtomicAssets, in an AtomicHeap.
+
+[View the demo!](https://atomicheap.calvindavis.uk/)
 
 ## Requirements
 

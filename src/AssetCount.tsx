@@ -10,7 +10,7 @@ export default function AssetCount(): JSX.Element {
 	});
 
 	return (
-		<div class="w-10 h-10 flex justify-center items-center bg-indigo-600 text-white text-3xl rounded-full">
+		<div class="inline-flex w-6 h-6 justify-center items-center bg-indigo-600 font-normal text-xs text-white rounded-full">
 			{count}
 		</div>
 	);

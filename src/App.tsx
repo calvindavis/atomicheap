@@ -1,21 +1,10 @@
 import { h, JSX } from "preact";
 import { useState } from "preact/hooks";
-import store, { AtomicAsset } from "./store";
-import { addAsset, addAssets, clearAssets, removeAsset } from "./AssetManager";
+import store from "./store";
 import AssetCount from "./AssetCount";
 import Button from "./Button";
-
-interface ResponseJson {
-	data: [
-		{
-			data: {
-				back_img: string;
-				img: string;
-				name: string;
-			};
-		}
-	];
-}
+import IpfsImage from "./IpfsImage";
+import AtomicAssets from "./AtomicAssets";
 
 export default function App(): JSX.Element {
 	const [assets, setAssets] = useState(store.getState().assets);
@@ -25,42 +14,29 @@ export default function App(): JSX.Element {
 		setAssets([...newAssets]);
 	});
 
-	function getAssets() {
-		fetch(
-			"https://us1.wax.api.atomicassets.io/atomicmarket/v1/assets?owner=pwlb2.wam&collection_name=kogsofficial"
-		)
-			.then((response) => {
-				return response.json();
-			})
-			.then((json: ResponseJson) => {
-				const assets: AtomicAsset[] = json.data.map((datum) => {
-					return {
-						img: `https://wax.atomichub.io/ipfs/${datum.data.img}`,
-						backimg: `https://wax.atomichub.io/preview?ipfs=${datum.data.img}`,
-						name: datum.data.name,
-					};
-				});
+	async function getAssets() {
+		const response = await AtomicAssets.assets();
 
-				console.log(assets);
-
-				addAssets(...assets);
+		if (response.success) {
+			store.dispatch({
+				type: "assets/add",
+				assets: response.data,
 			});
+		} else {
+			alert("Error!");
+		}
 	}
 
 	return (
 		<div>
-			<h1>AtomicHeap</h1>
-			<AssetCount />
+			<h1 class="font-bold text-2xl">
+				AtomicHeap <AssetCount />
+			</h1>
+
 			<div>
 				<Button
 					action={() => {
-						addAsset("Testing");
-					}}
-					text="Add asset"
-				/>
-				<Button
-					action={() => {
-						clearAssets();
+						store.dispatch({ type: "assets/clear" });
 					}}
 					text="Clear assets"
 				/>
@@ -70,16 +46,23 @@ export default function App(): JSX.Element {
 			<div class="grid grid-cols-6 gap-4">
 				{assets.map((asset, key) => (
 					<div key={key}>
-						<div>{asset.name}</div>
+						<div>{asset.data.name}</div>
 
-						<img src={asset.backimg} alt="" />
+						<div class="relative">
+							<IpfsImage hash={asset.data.img} preview />
 
-						<Button
-							action={() => {
-								removeAsset(asset);
-							}}
-							text="Remove"
-						/>
+							<div class="absolute bottom-0 left-0">
+								<Button
+									action={() => {
+										store.dispatch({
+											type: "assets/remove",
+											assets: [asset],
+										});
+									}}
+									text="Remove"
+								/>
+							</div>
+						</div>
 					</div>
 				))}
 			</div>
